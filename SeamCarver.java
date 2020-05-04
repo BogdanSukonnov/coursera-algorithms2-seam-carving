@@ -5,7 +5,6 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.Picture;
-import edu.princeton.cs.algs4.Stack;
 
 import java.util.Arrays;
 
@@ -17,8 +16,6 @@ public class SeamCarver {
 
     private Picture picture;
 
-    private int width;
-
     private double energy[];
 
     // create a seam carver object based on the given picture
@@ -27,7 +24,6 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         this.picture = new Picture(picture);
-        this.width = this.picture.width();
         energy = new double[picture.width() * picture.height()];
         Arrays.fill(energy, UNKNOWN_ENERGY);
     }
@@ -67,24 +63,26 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        // rotate and find horizontal
-        return new int[width()];
+        return findSeam(true);
     }
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
+        return findSeam(false);
+    }
 
+    private int[] findSeam(boolean isHorizontal) {
         double[] dist = new double[energy.length];
         Arrays.fill(dist, Double.MAX_VALUE);
-        Arrays.fill(dist, 0, width - 1, FRAME_ENERGY);
+        Arrays.fill(dist, 0, isHorizontal ? height() - 1 : width() - 1, FRAME_ENERGY);
 
         int[] prev = new int[energy.length];
 
         for (int point = 0; point < energy.length; ++point) {
-            relaxPoint(point, dist, prev);
+            relaxPoint(point, dist, prev, isHorizontal);
         }
 
-        return getSeam(dist, prev);
+        return getSeam(dist, prev, isHorizontal);
     }
 
     // remove horizontal seam from current picture
@@ -102,20 +100,20 @@ public class SeamCarver {
     public static void main(String[] args) {
     }
 
-    private int[] getSeam(double[] dist, int[] prev) {
-        int lastMin = indexOfMinDistInLastRow(dist);
-        int[] seam = new int[picture.height()];
+    private int[] getSeam(double[] dist, int[] prev, boolean isHorizontal) {
+        int lastMin = indexOfMinDistInLastRow(dist, isHorizontal);
+        int[] seam = new int[rowSize(!isHorizontal)];
         for (int i = seam.length - 1; i >= 0; --i) {
-            seam[i] = lastMin % width();
+            seam[i] = lastMin % rowSize(isHorizontal);
             lastMin = prev[lastMin];
         }
         return seam;
     }
 
-    private int indexOfMinDistInLastRow(double[] dist) {
+    private int indexOfMinDistInLastRow(double[] dist, boolean isHorizontal) {
         double minDistInLastRow = Integer.MAX_VALUE;
         int indexOfMinDistInLastRow = 0;
-        for (int index = dist.length - width(); index < dist.length; index++) {
+        for (int index = dist.length - rowSize(isHorizontal); index < dist.length; index++) {
             if (dist[index] < minDistInLastRow) {
                 minDistInLastRow = dist[index];
                 indexOfMinDistInLastRow = index;
@@ -124,29 +122,39 @@ public class SeamCarver {
         return indexOfMinDistInLastRow;
     }
 
-    private double energy(int flatIndex) {
-        return energy(x(flatIndex), y(flatIndex));
+    private double energy(int flatIndex, boolean isHorizontal) {
+        return energy(x(flatIndex, isHorizontal), y(flatIndex, isHorizontal));
     }
 
-    private int x(int flatIndex) {
-        return flatIndex % width();
+    private int x(int flatIndex, boolean isHorizontal) {
+        return rotatedIndex(flatIndex, isHorizontal) % width();
     }
 
-    private int y(int flatIndex) {
-        return flatIndex / width();
+    private int y(int flatIndex, boolean isHorizontal) {
+        return rotatedIndex(flatIndex, isHorizontal) / width();
     }
 
-    private void relaxPoint(int point, double[] dist, int[] prev) {
-        if (point + width() >= energy.length) {
+    private int rotatedIndex(int flatIndex, boolean isHorizontal) {
+        if (isHorizontal) {
+            return toFlatIndex(flatIndex / height(), flatIndex % height());
+        }
+        else {
+            return flatIndex;
+        }
+    }
+
+    private void relaxPoint(int point, double[] dist, int[] prev, boolean isHorizontal) {
+        int rowSize = rowSize(isHorizontal);
+        if (point + rowSize >= energy.length) {
             return;
         }
         for (int deltaX = -1; deltaX <= 1; ++deltaX) {
-            if (point % width() == 0 && deltaX < 0
-                    || point % width() == width() - 1 && deltaX > 0) {
+            if (point % rowSize == 0 && deltaX < 0
+                    || point % rowSize == rowSize - 1 && deltaX > 0) {
                 continue;
             }
-            int nextPoint = point + width + deltaX;
-            double newDist = dist[point] + energy(nextPoint);
+            int nextPoint = point + rowSize + deltaX;
+            double newDist = dist[point] + energy(nextPoint, isHorizontal);
             if (newDist < dist[nextPoint]) {
                 dist[nextPoint] = newDist;
                 prev[nextPoint] = point;
@@ -154,19 +162,8 @@ public class SeamCarver {
         }
     }
 
-    private boolean pushBredth(Stack<Integer> stack, boolean[] visited) {
-        return pushChild(0, stack, visited) || pushChild(1, stack, visited);
-    }
-
-    private boolean pushChild(int deltaX, Stack<Integer> stack, boolean[] visited) {
-        int child = stack.peek() + width() + deltaX;
-        if (child >= energy.length || visited[child]) {
-            return false;
-        }
-        stack.push(child);
-        visited[child] = true;
-        pushBredth(stack, visited);
-        return true;
+    private int rowSize(boolean isHorizontal) {
+        return isHorizontal ? height() : width();
     }
 
     private void checkSeam(int[] seam, int length) {
@@ -207,6 +204,6 @@ public class SeamCarver {
     }
 
     private int toFlatIndex(int x, int y) {
-        return (y * width) + x;
+        return (y * width()) + x;
     }
 }
