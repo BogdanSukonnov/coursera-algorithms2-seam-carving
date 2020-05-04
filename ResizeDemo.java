@@ -15,6 +15,10 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
 
 public class ResizeDemo {
+
+    private static final boolean HORIZONTAL = true;
+    private static final boolean VERTICAL = false;
+
     public static void main(String[] args) {
         if (args.length != 3) {
             StdOut.println(
@@ -31,22 +35,71 @@ public class ResizeDemo {
 
         Stopwatch sw = new Stopwatch();
 
+        printHorizontalSeam(sc);
+
         for (int i = 0; i < removeRows; i++) {
             int[] horizontalSeam = sc.findHorizontalSeam();
             sc.removeHorizontalSeam(horizontalSeam);
+            printHorizontalSeam(sc);
         }
+
+        printVerticalSeam(sc);
 
         for (int i = 0; i < removeColumns; i++) {
             int[] verticalSeam = sc.findVerticalSeam();
             sc.removeVerticalSeam(verticalSeam);
+            printVerticalSeam(sc);
         }
-        Picture outputImg = sc.picture();
+        // Picture outputImg = sc.picture();
 
         StdOut.printf("new image size is %d columns by %d rows\n", sc.width(), sc.height());
 
         StdOut.println("Resizing time: " + sw.elapsedTime() + " seconds.");
-        inputImg.show();
-        outputImg.show();
+        // inputImg.show();
+        // outputImg.show();
+    }
+
+    static void printVerticalSeam(SeamCarver sc) {
+
+        StdOut.printf("Vertical seam: { ");
+        int[] verticalSeam = sc.findVerticalSeam();
+        for (
+                int x : verticalSeam)
+            StdOut.print(x + " ");
+        StdOut.println("}");
+
+        printSeam(sc, verticalSeam, VERTICAL);
+    }
+
+    static void printHorizontalSeam(SeamCarver sc) {
+        StdOut.printf("Horizontal seam: { ");
+        int[] horizontalSeam = sc.findHorizontalSeam();
+        for (int y : horizontalSeam)
+            StdOut.print(y + " ");
+        StdOut.println("}");
+        printSeam(sc, horizontalSeam, HORIZONTAL);
+    }
+
+    private static void printSeam(SeamCarver carver, int[] seam, boolean direction) {
+        double totalSeamEnergy = 0.0;
+
+        for (int row = 0; row < carver.height(); row++) {
+            for (int col = 0; col < carver.width(); col++) {
+                double energy = carver.energy(col, row);
+                String marker = " ";
+                if ((direction == HORIZONTAL && row == seam[col]) ||
+                        (direction == VERTICAL && col == seam[row])) {
+                    marker = "*";
+                    totalSeamEnergy += energy;
+                }
+                StdOut.printf("%7.2f%s ", energy, marker);
+            }
+            StdOut.println();
+        }
+        // StdOut.println();
+        StdOut.printf("Total energy = %f\n", totalSeamEnergy);
+        StdOut.println();
+        StdOut.println();
     }
 
 }
