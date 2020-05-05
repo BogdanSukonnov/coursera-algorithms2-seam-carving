@@ -81,23 +81,19 @@ public class ResizeDemo {
     }
 
     private static void printSeam(SeamCarver carver, int[] seam, boolean direction) {
-        double totalSeamEnergy = 0.0;
-
         for (int row = 0; row < carver.height(); row++) {
             for (int col = 0; col < carver.width(); col++) {
-                double energy = carver.energy(col, row);
+                int rgb = carver.rgb(col, row);
                 String marker = " ";
                 if ((direction == HORIZONTAL && row == seam[col]) ||
                         (direction == VERTICAL && col == seam[row])) {
                     marker = "*";
-                    totalSeamEnergy += energy;
                 }
-                StdOut.printf("%7.2f%s ", energy, marker);
+                StdOut.printf("%s%s ", rgb, marker);
             }
             StdOut.println();
         }
         // StdOut.println();
-        StdOut.printf("Total energy = %f\n", totalSeamEnergy);
         StdOut.println();
         StdOut.println();
     }
