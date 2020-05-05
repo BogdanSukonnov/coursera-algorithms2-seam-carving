@@ -1,7 +1,7 @@
-/******************************************************************************
- *  Compilation:  javac ShowEnergy.java
- *  Execution:    java ShowEnergy input.png
- *  Dependencies: SeamCarver.java SCUtility.java
+package given; /******************************************************************************
+ *  Compilation:  javac given.ShowEnergy.java
+ *  Execution:    java given.ShowEnergy input.png
+ *  Dependencies: SeamCarver.java given.SCUtility.java
  *
  *
  *  Read image from file specified as command line argument. Show original

@@ -1,12 +1,12 @@
-/******************************************************************************
- *  Compilation:  javac PrintSeams.java
- *  Execution:    java PrintSeams input.png
+package given; /******************************************************************************
+ *  Compilation:  javac given.PrintSeams.java
+ *  Execution:    java given.PrintSeams input.png
  *  Dependencies: SeamCarver.java
  *
  *  Read image from file specified as command-line argument. Print square
  *  of energies of pixels, a vertical seam, and a horizontal seam.
  *
- *  % java PrintSeams 6x5.png
+ *  % java given.PrintSeams 6x5.png
  *  6x5.png (6-by-5 image)
  *
  *  The table gives the dual-gradient energies of each pixel.

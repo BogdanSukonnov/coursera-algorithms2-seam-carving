@@ -1,7 +1,7 @@
-/******************************************************************************
- *  Compilation:  javac ResizeDemo.java
- *  Execution:    java ResizeDemo input.png columnsToRemove rowsToRemove
- *  Dependencies: SeamCarver.java SCUtility.java
+package given; /******************************************************************************
+ *  Compilation:  javac given.ResizeDemo.java
+ *  Execution:    java given.ResizeDemo input.png columnsToRemove rowsToRemove
+ *  Dependencies: SeamCarver.java given.SCUtility.java
  *
  *
  *  Read image from file specified as command line argument. Use SeamCarver
@@ -22,7 +22,7 @@ public class ResizeDemo {
     public static void main(String[] args) {
         if (args.length != 3) {
             StdOut.println(
-                    "Usage:\njava ResizeDemo [image filename] [num cols to remove] [num rows to remove]");
+                    "Usage:\njava given.ResizeDemo [image filename] [num cols to remove] [num rows to remove]");
             return;
         }
 

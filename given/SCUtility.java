@@ -1,5 +1,5 @@
-/******************************************************************************
- *  Compilation:  javac SCUtility.java
+package given; /******************************************************************************
+ *  Compilation:  javac given.SCUtility.java
  *  Execution:    none
  *  Dependencies: SeamCarver.java
  *

@@ -1,6 +1,6 @@
-/******************************************************************************
- *  Compilation:  javac PrintEnergy.java
- *  Execution:    java PrintEnergy input.png
+package given; /******************************************************************************
+ *  Compilation:  javac given.PrintEnergy.java
+ *  Execution:    java given.PrintEnergy input.png
  *  Dependencies: SeamCarver.java
  *
  *
