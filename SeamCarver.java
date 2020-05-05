@@ -56,6 +56,10 @@ public class SeamCarver {
         return height;
     }
 
+    // int rgb(int x, int y) {
+    //     return points[toFlatIndex(x, y)];
+    // }
+
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -161,7 +165,7 @@ public class SeamCarver {
     }
 
     private void removePointVertical(int seamIndex, int[] seam) {
-        int next = seamIndex == seam.length - 1 ? seam.length : seam[seamIndex + 1];
+        int next = seamIndex == seam.length - 1 ? width * height : seam[seamIndex + 1];
         for (int toMove = seam[seamIndex] + 1; toMove < next; ++toMove) {
             int moveTo = toMove - seamIndex - 1;
             points[moveTo] = points[toMove];
